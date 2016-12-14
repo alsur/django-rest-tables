@@ -1,0 +1,24 @@
+{
+  "name": "django-rest-tables",
+  "version": "0.0.0",
+  "authors": [
+    "nekmo <nekmo@alsur.es>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "rest_tables/static/rest_tables/src/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-table": "~3.0.1"
+  }
+}

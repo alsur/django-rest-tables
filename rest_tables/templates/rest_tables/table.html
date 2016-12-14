@@ -1,0 +1,16 @@
+<table>
+    <thead>
+        <tr>
+            {% for column in columns %}
+            <th>{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        {% for column in columns %}
+        <td class="column-{{ column.name }}"></td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>
