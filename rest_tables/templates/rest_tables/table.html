@@ -1,16 +1,11 @@
-<table>
-    <thead>
-        <tr>
-            {% for column in columns %}
-            <th>{{ column }}</th>
+{% load angular_utils %}
+<div ng-controller="tableController as table">
+    <table ng-table="table.tableParams" class="table table-bordered table-striped table-condensed">
+        <tr ng-repeat="row in $data">
+            {% for column in table.render_columns %}
+            <td class="column-{{ column.name }}" title="'{{ column.name }}'"
+                sortable="'{{ column.get_ordering }}'">{% ngvar column.get_angular_expr %}</td>
             {% endfor %}
         </tr>
-    </thead>
-    <tbody>
-    <tr>
-        {% for column in columns %}
-        <td class="column-{{ column.name }}"></td>
-        {% endfor %}
-    </tr>
-    </tbody>
-</table>
+    </table>
+</div>
