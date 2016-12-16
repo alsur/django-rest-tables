@@ -4,7 +4,10 @@
         <tr ng-repeat="row in $data">
             {% for column in table.render_columns %}
             <td class="column-{{ column.name }}" title="'{{ column.name }}'"
-                sortable="'{{ column.get_ordering }}'">{% ngvar column.get_angular_expr %}</td>
+                sortable="'{{ column.get_ordering }}'"
+                {% if column.filtering %}filter="{'{{ column.get_filtering }}': '{{ column.type }}'}"{% endif %}>
+                {% ngvar column.get_angular_expr %}
+            </td>
             {% endfor %}
         </tr>
     </table>
