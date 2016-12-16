@@ -6,7 +6,7 @@
             <td class="column-{{ column.name }}" title="'{{ column.name }}'"
                 sortable="'{{ column.get_ordering }}'"
                 {% if column.filtering %}filter="{'{{ column.get_filtering }}': '{{ column.type }}'}"{% endif %}>
-                {% ngvar column.get_angular_expr %}
+                {{ column.render_angular_expr }}
             </td>
             {% endfor %}
         </tr>

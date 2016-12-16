@@ -6,6 +6,39 @@ from django.template.loader import get_template
 from rest_tables.columns import Column
 
 
+class DefaultMeta(object):
+    default_sorting = None
+
+    @classmethod
+    def get_default_sorting(cls):
+        # TODO: support lists. Use OrderedDict?
+        sorting = cls.default_sorting
+        if sorting is None:
+            return
+        is_desc = sorting.startswith('-')
+        sorting = sorting[1:] if is_desc else sorting
+        return {sorting: 'desc' if is_desc else 'asc'}
+
+    @classmethod
+    def get_initial_params(cls):
+        initial_params = {
+            'count': 5,
+            'counts': [],
+            'sorting': cls.get_default_sorting()
+        }
+        return {key: value for key, value in initial_params.items() if value is not None}
+
+
+def create_meta(meta_class=None):
+    if meta_class is None:
+        class Meta(DefaultMeta):
+            pass
+        return Meta
+    class Meta(meta_class, DefaultMeta):
+        pass
+    return Meta
+
+
 class MetaTable(type):
     @classmethod
     def __prepare__(mcs, name, bases):
@@ -14,6 +47,7 @@ class MetaTable(type):
     def __new__(cls, name, bases, attrs, **kwargs):
         table = super(MetaTable, cls).__new__(cls, name, bases, attrs, **kwargs)
         table.__columns__ = cls.get_columns(attrs)
+        table.Meta = create_meta(attrs.get('Meta'))
         return table
 
     @classmethod
