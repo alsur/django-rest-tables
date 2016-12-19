@@ -8,6 +8,7 @@ from rest_tables.columns import Column
 
 class DefaultMeta(object):
     default_sorting = None
+    controller = 'tableController'
 
     @classmethod
     def get_default_sorting(cls):
@@ -24,7 +25,7 @@ class DefaultMeta(object):
         initial_params = {
             'count': 5,
             'counts': [],
-            'sorting': cls.get_default_sorting()
+            'sorting': cls.get_default_sorting(),
         }
         return {key: value for key, value in initial_params.items() if value is not None}
 
@@ -72,5 +73,7 @@ class Table(six.with_metaclass(MetaTable)):
         template = get_template('rest_tables/table.html')
         context = {
             'table': self,
+            'controller': self.Meta.controller,
+            'initial_params': self.Meta.get_initial_params,
         }
         return template.render(context)

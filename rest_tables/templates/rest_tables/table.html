@@ -1,14 +1,17 @@
 {% load angular_utils %}
-<div ng-controller="tableController as table">
-    <table ng-table="table.tableParams" class="table table-bordered table-striped table-condensed">
-        <tr ng-repeat="row in $data">
-            {% for column in table.render_columns %}
-            <td class="column-{{ column.name }}" title="'{{ column.name }}'"
-                sortable="'{{ column.get_ordering }}'"
-                {% if column.filtering %}filter="{'{{ column.get_filtering }}': '{{ column.type }}'}"{% endif %}>
-                {{ column.render_angular_expr }}
-            </td>
-            {% endfor %}
-        </tr>
-    </table>
+{# TODO: tableController debe ser un parámetro #}
+<div ng-init="initialParams = {{ initial_params|safe }};">
+    <div ng-controller="{{ controller }} as table">
+        <table ng-table="table.tableParams" class="table table-bordered table-striped table-condensed">
+            <tr ng-repeat="row in $data">
+                {% for column in table.render_columns %}
+                <td class="column-{{ column.name }}" title="'{{ column.name }}'"
+                    sortable="'{{ column.get_ordering }}'"
+                    {% if column.filtering %}filter="{'{{ column.get_filtering }}': '{{ column.type }}'}"{% endif %}>
+                    {{ column.render_angular_expr }}
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
 </div>
