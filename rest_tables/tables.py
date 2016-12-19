@@ -1,14 +1,17 @@
 from collections import OrderedDict
 
 import six
+from django.core.urlresolvers import reverse
 from django.template.loader import get_template
 
 from rest_tables.columns import Column
 
 
 class DefaultMeta(object):
+    url_name = None
     default_sorting = None
     controller = 'tableController'
+    count = None
 
     @classmethod
     def get_default_sorting(cls):
@@ -23,11 +26,15 @@ class DefaultMeta(object):
     @classmethod
     def get_initial_params(cls):
         initial_params = {
-            'count': 5,
+            'count': cls.count,
             'counts': [],
             'sorting': cls.get_default_sorting(),
         }
         return {key: value for key, value in initial_params.items() if value is not None}
+
+    @classmethod
+    def get_url(cls):
+        return reverse(cls.url_name)
 
 
 def create_meta(meta_class=None):
@@ -75,5 +82,6 @@ class Table(six.with_metaclass(MetaTable)):
             'table': self,
             'controller': self.Meta.controller,
             'initial_params': self.Meta.get_initial_params,
+            'url': self.Meta.get_url()
         }
         return template.render(context)

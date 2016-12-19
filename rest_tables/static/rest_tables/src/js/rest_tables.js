@@ -18,7 +18,7 @@ module.controller('restTableController', function($scope, NgTableParams, $http){
                 if(params._params.filter){
                     urlParams = angular.extend(urlParams, params._params.filter);
                 }
-                return $http.get("/es/api/current/transactions/", {params: urlParams}).then(function(data) {
+                return $http.get($scope.url, {params: urlParams}).then(function(data) {
                     params.total(data.data.count); // recal. page nav controls
                     return data.data.results;
                 });
