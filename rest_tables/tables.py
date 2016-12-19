@@ -3,15 +3,24 @@ from collections import OrderedDict
 import six
 from django.core.urlresolvers import reverse
 from django.template.loader import get_template
+from rest_framework.views import get_view_name
 
 from rest_tables.columns import Column
 
 
+def get_drf_columns(serializer, filter_columns):
+    fields = serializer.get_fields()
+    return OrderedDict([(name, Column()) for name, column in fields.items() if filter_columns(name, column)])
+
+
 class DefaultMeta(object):
+    view_set = None
     url_name = None
     default_sorting = None
     controller = 'tableController'
     count = None
+    columns = None
+    exclude = None
 
     @classmethod
     def get_default_sorting(cls):
@@ -34,7 +43,11 @@ class DefaultMeta(object):
 
     @classmethod
     def get_url(cls):
-        return reverse(cls.url_name)
+        url_name = cls.url_name
+        if not url_name:
+            url_name = get_view_name(cls.view_set).lower()
+            url_name = '{}-list'.format(url_name)
+        return reverse(url_name)
 
 
 def create_meta(meta_class=None):
@@ -66,15 +79,40 @@ class MetaTable(type):
 
 class Table(six.with_metaclass(MetaTable)):
     def __init__(self):
+        self.drf_serializer = self.Meta.view_set.serializer_class()
         self.columns = self.get_columns()
-        pass
 
     def get_columns(self):
-        return self.__columns__
+        columns = self.get_default_columns()
+        columns.update(self.__columns__)
+        return columns
+
+    def _filter_column(self, name, column):
+        if name in (self.Meta.exclude or ()):
+            return False
+        if not self.Meta.columns or name in self.Meta.columns:
+            return True
+
+    def get_default_columns(self):
+        return get_drf_columns(self.drf_serializer, self._filter_column)
+
+    def get_columns_order(self):
+        if not self.Meta.columns:
+            return
+        def columns_order(item):
+            column_name = item[0]
+            if not column_name in self.Meta.columns:
+                # Move at the end
+                return 99999
+            return self.Meta.columns.index(column_name)
+        return columns_order
 
     def render_columns(self):
-        columns = self.columns
-        return [column(name) for name, column in columns.items()]
+        columns = self.columns.items()
+        order = self.get_columns_order()
+        if order:
+            columns = sorted(columns, key=order)
+        return [column(name) for name, column in columns]
 
     def as_html(self):
         template = get_template('rest_tables/table.html')
