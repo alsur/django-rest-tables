@@ -11,10 +11,11 @@ module.controller('restTableController', function($scope, NgTableParams, $http){
             counts: [],
             getData: function(params) {
                 // ajax request to api
-                var urlParams = {
+                var urlParams = angular.copy($scope.$parent.urlParams);
+                angular.extend(urlParams, {
                     'page': params._params.page,
                     'ordering': _this.getSorting(params).join(',')
-                };
+                });
                 if(params._params.filter){
                     urlParams = angular.extend(urlParams, params._params.filter);
                 }

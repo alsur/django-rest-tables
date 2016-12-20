@@ -1,6 +1,6 @@
 {% load angular_utils %}
 {# TODO: tableController debe ser un parámetro #}
-<div ng-init="initialParams = {{ initial_params|safe }}; url = '{{ url }}'">
+<div ng-init="initialParams = {{ initial_params|safe }}; url = '{{ url }}'; urlParams = {{ url_params|safe }}">
     <div ng-controller="{{ controller }} as table">
         <table ng-table="table.tableParams" class="table table-bordered table-striped table-condensed">
             <tr ng-repeat="row in $data">

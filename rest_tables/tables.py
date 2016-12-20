@@ -21,6 +21,7 @@ class DefaultMeta(object):
     count = None
     columns = None
     exclude = None
+    request_params = None
 
     @classmethod
     def get_default_sorting(cls):
@@ -51,7 +52,7 @@ class DefaultMeta(object):
 
 
 def create_meta(meta_class=None):
-    if meta_class is None:
+    if meta_class is None or meta_class is DefaultMeta:
         class Meta(DefaultMeta):
             pass
         return Meta
@@ -78,9 +79,10 @@ class MetaTable(type):
 
 
 class Table(six.with_metaclass(MetaTable)):
-    def __init__(self):
+    def __init__(self, request_params=None):
         self.drf_serializer = self.Meta.view_set.serializer_class()
         self.columns = self.get_columns()
+        self.request_params = dict(self.Meta.request_params or {}, **request_params or {})
 
     def get_columns(self):
         columns = self.get_default_columns()
@@ -120,6 +122,9 @@ class Table(six.with_metaclass(MetaTable)):
             'table': self,
             'controller': self.Meta.controller,
             'initial_params': self.Meta.get_initial_params,
-            'url': self.Meta.get_url()
+            'url': self.Meta.get_url(),
+            'url_params': self.request_params,
         }
         return template.render(context)
+
+    Meta = DefaultMeta
