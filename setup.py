@@ -20,8 +20,8 @@ EMAIL = 'contacto@nekmo.com'
 
 # Información del paquete
 PACKAGE_NAME = 'django-rest-tables'
-PACKAGE_DOWNLOAD_URL = 'https://github.com/Nekmo/django-rest-tables/archive/master.zip'  # .tar.gz
-URL = 'https://github.com/Nekmo/django-rest-tables'
+PACKAGE_DOWNLOAD_URL = 'https://github.com/alsur/django-rest-tables/archive/master.zip'  # .tar.gz
+URL = 'https://github.com/alsur/django-rest-tables'
 STATUS_LEVEL = 3  # 1:Planning 2:Pre-Alpha 3:Alpha 4:Beta 5:Production/Stable 6:Mature 7:Inactive
 KEYWORDS = ['django', 'django-rest-framework', 'tables',]  # Palabras clave
 # https://github.com/github/choosealicense.com/tree/gh-pages/_licenses
