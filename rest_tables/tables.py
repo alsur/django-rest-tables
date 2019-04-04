@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
 import six
-from django.core.urlresolvers import reverse
 from django.template.loader import get_template
+from django.urls import reverse
 from rest_framework.views import get_view_name
 
 from rest_tables.columns import Column
