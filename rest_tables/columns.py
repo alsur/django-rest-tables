@@ -1,5 +1,5 @@
 from django.forms.utils import flatatt
-from django.utils import six
+import six
 from django.utils.html import format_html
 
 ANGULAR_ROW_VARIABLE = 'row'
