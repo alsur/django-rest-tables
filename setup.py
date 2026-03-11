@@ -20,10 +20,10 @@ def parse_requirements(filename):
             line = line.strip()
             # Skip comments and empty lines
             if not line or line.startswith('#'):
-            continue
+                continue
             # Skip -r, --editable, etc.
             if line.startswith('-'):
-            continue
+                continue
             requirements.append(line)
     return requirements
 
