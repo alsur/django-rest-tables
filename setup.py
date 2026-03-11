@@ -9,12 +9,23 @@ from fnmatch import fnmatchcase
 import os
 import sys
 import uuid
-import pip
-
-if LooseVersion(pip.__version__) >= "10.0.0":
-    from pip._internal.req import parse_requirements
-else:
-    from pip.req import parse_requirements
+# Parse requirements.txt manually (pip 21+ compatibility)
+def parse_requirements(filename):
+    """Parse requirements from requirements.txt, compatible with all pip versions."""
+    requirements = []
+    if not os.path.exists(filename):
+        return requirements
+    with open(filename, 'r') as f:
+        for line in f:
+            line = line.strip()
+            # Skip comments and empty lines
+            if not line or line.startswith('#'):
+            continue
+            # Skip -r, --editable, etc.
+            if line.startswith('-'):
+            continue
+            requirements.append(line)
+    return requirements
 
 ###############################
 #  Configuración del paquete  #
@@ -176,9 +187,10 @@ def find_package_data(where='.', package='',
 
 # Lista de dependencias a instalar
 if os.path.exists(requirements_path):
-    requirements = parse_requirements(requirements_path, session=uuid.uuid1())
-    install_requires = [str(ir.req) for ir in requirements if not get_url(ir)]
-    dependency_links = [get_url(ir) for ir in requirements if get_url(ir)]
+    requirements = parse_requirements(requirements_path)
+    install_requires = [r for r in requirements if not r.startswith('-e')]
+    # TODO: parse dependency_links from -e packages
+    dependency_links = []
 else:
     install_requires = []
     dependency_links = []
